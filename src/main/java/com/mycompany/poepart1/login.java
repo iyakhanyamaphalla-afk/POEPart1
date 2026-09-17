@@ -10,12 +10,12 @@ package com.mycompany.poepart1;
  */
 public class login {
     
-    public String Firstname;
-    public String Lastname;
-    public String Username;
-    public String password;
-    public String cellphoneNumber;
-    
+    private String Firstname;
+    private String Lastname;
+    private String Username;
+    private String password;
+    private String cellphoneNumber;
+    private boolean LastLOgInSuccessful;
     public login(String Firstname, String Lastname, 
             String Username, String password, String cellphoneNumber){
     
@@ -24,6 +24,11 @@ public class login {
     this.Username=Username;
     this.password=password;
     this.cellphoneNumber=cellphoneNumber;
+    
+    }
+
+    login() {
+        
     }
     
     public boolean CheckUserName(){
@@ -76,17 +81,40 @@ public class login {
     
     return"Password is not correctly formated,please ensure that the password contains atleast 8 characters,a capital letter,a number and a special character.";
     }
-    if(!CheckCellPhoneNumber()){
+    if(!CheckCellPhoneNumber(cellphoneNumber)){
     
     return "cellphone number is incorrectly formated or does not contain an international code,please correct the number and try again";
+    }
+    this.Firstname=Firstname;
+    this.Lastname= Lastname;
+    this.Username= Username;
+    this.cellphoneNumber= cellphoneNumber;
+    this.password= password;
     
+    
+    return "cellphone number successfully captured";
+    }
+    public boolean LoginUser(String enteredUsername, String enteredpassword){
+    if(enteredUsername==null || enteredpassword==null){
+    return false;
+    }
+   return enteredUsername.equals(this.Username)&& enteredpassword.equals(this.password);
    
     }
+    public String returnLoginStatus(boolean isLoggedIn){
     
+    if( LastLOgInSuccessful){
+    return"welcome" +this.Firstname + "," +this.Lastname+"It is great to see you again.";
+   
+    }else{
+    
+    return "useranme or password is incorrect,please try again";
     
     }
     
+   
     
+    }
     
     }
     
