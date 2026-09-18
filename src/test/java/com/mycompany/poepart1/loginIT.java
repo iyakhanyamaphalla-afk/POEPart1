@@ -102,7 +102,14 @@ public void testPasswordMeetsComplexity() {
         // Verify that logging in with a wrong password returns false
         assertFalse(user.LoginUser("kyl_1", "WrongPassword!"), "Login should return False for incorrect credentials.");
     }
-    
+        @Test
+    public void UsernameCorrect() {
+        // Test Data: "kyl_1" (Contains underscore, 5 characters long)
+        login user = new login("Kyle", "Smith", "kyl_1", "Ch&&sec@ke99!", "+27838968976");
+
+        // Verify that the CheckUserName method returns true
+        assertTrue(user.CheckUserName(), "'kyl_1' should be a correctly formatted username.");
+    }
     
     
     
