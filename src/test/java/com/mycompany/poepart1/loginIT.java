@@ -107,13 +107,34 @@ public void testPasswordMeetsComplexity() {
         // Test Data: "kyl_1" (Contains underscore, 5 characters long)
         login user = new login("Kyle", "Smith", "kyl_1", "Ch&&sec@ke99!", "+27838968976");
 
-        // Verify that the CheckUserName method returns true
+        // Verifying that the CheckUserName method returns true
         assertTrue(user.CheckUserName(), "'kyl_1' should be a correctly formatted username.");
     }
     
-    
-    
-    
+        @Test
+    public void UsernameIncorrect() {
+        // Test Data: "kyle!!!!!!!" (No underscore, too long)
+        login user = new login("Kyle", "Smith", "kyle!!!!!!!", "Ch&&sec@ke99!", "+27838968976");
+
+        // Verifying that the CheckUserName method returns false
+        assertFalse(user.CheckUserName(), " 'kyle!!!!!!!' should be an incorrectly formatted username.");
+    }
+        @Test
+    public void PasswordValid() {
+        // Test Data: "Ch&&sec@ke99!" (Has 8+ chars, Capital, Number, Special)
+        login user = new login("Kyle", "Smith", "kyl_1", "Ch&&sec@ke99!", "+27838968976");
+
+        // Verify that CheckPasswordComplexity returns true
+        assertTrue(user.CheckPasswordComplexity(), "Password should meet complexity requirements.");
+    }
+        @Test
+    public void PasswordInvalid() {
+        // Test Data: "password" (No capital, number, or special char)
+        login user = new login("Kyle", "Smith", "kyl_1", "password", "+27838968976");
+
+        // Verify that CheckPasswordComplexity returns false
+        assertFalse(user.CheckPasswordComplexity(), "Password should NOT meet complexity requirements.");
+    }
     
     
 }
