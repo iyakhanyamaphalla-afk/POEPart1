@@ -15,7 +15,7 @@ public class login {
     private String Username;
     private String password;
     private String cellphoneNumber;
-    private boolean LastLOgInSuccessful;
+    private boolean IsLoggedIN;
     public login(String Firstname, String Lastname, 
             String Username, String password, String cellphoneNumber){
     
@@ -39,7 +39,7 @@ public class login {
     }
      public boolean CheckPasswordComplexity() {
          
-         if(password==null || password.length()<8){
+         if(password==null || password.length()<=8){
          
          return false;
          }
@@ -68,43 +68,48 @@ public class login {
          return hasCapitalLetter && hasNumber && hasSpecialCharacter; 
         
      }
-    public boolean CheckCellPhoneNumber(String cellphoneNumber){
-    return cellphoneNumber.matches("^\\+27[0-9]{9}^");
-    }
+    public boolean CheckCellPhoneNumber(String cellPhoneNumber) {
+    // This Regex checks for: 
+    // 1. Starts with a '+' 
+    // 2. Followed by 1 to 3 digits for the country code (e.g., 27)
+    // 3. Followed by 9 to 10 digits for the actual number
+    // Example of a valid number: +27838968976
+    return cellPhoneNumber != null && cellPhoneNumber.matches("^\\+[0-9]{1,3}[0-9]{9,10}$");
+}
     public String registerUser(){
     
     if(!CheckUserName()){
     
-    return "Username is not correctly formatted,please ensure that your username contains an underscore and is no more than 5 characters in length";
+    return "Username is not correctly formatted; please ensure that your username contains an underscore and is no more than five characters in length";
     }
-    if(!CheckPasswordComplexity()){
     
-    return"Password is not correctly formated,please ensure that the password contains atleast 8 characters,a capital letter,a number and a special character.";
+    if(!CheckPasswordComplexity()){
+        
+        return "Password is not correctly formatted; please ensure that the password contains at least eight characters, a capital letter, a number, and a special character.";
     }
+    
     if(!CheckCellPhoneNumber(cellphoneNumber)){
     
-    return "cellphone number is incorrectly formated or does not contain an international code,please correct the number and try again";
+    return "Cell number is incorrectly formatted or does not contain an international code; please correct the number and try again.";
     }
+    
     this.Firstname=Firstname;
     this.Lastname= Lastname;
     this.Username= Username;
     this.cellphoneNumber= cellphoneNumber;
     this.password= password;
     
+    return  "Password successfully captured";
     
-    return "cellphone number successfully captured";
-    }
-    public boolean LoginUser(String enteredUsername, String enteredpassword){
-    if(enteredUsername==null || enteredpassword==null){
-    return false;
-    }
-   return enteredUsername.equals(this.Username)&& enteredpassword.equals(this.password);
    
     }
-    public String returnLoginStatus(boolean isLoggedIn){
+    public boolean LoginUser(String enteredUsername, String enteredPassword) {
+    return enteredUsername.equals(this.Username) && enteredPassword.equals(this.password);
+}
+    public String returnLoginStatus(boolean IsLoggedIN){
     
-    if( LastLOgInSuccessful){
-    return"welcome" +this.Firstname + "," +this.Lastname+"It is great to see you again.";
+    if(IsLoggedIN){
+    return "welcome " + this.Firstname + "  " + this.Lastname + " It is great to see you again. ";
    
     }else{
     
