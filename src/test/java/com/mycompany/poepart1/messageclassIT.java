@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/UnitTests/JUnit5TestClass.java to edit this template
  */
 package com.mycompany.poepart1;
-import static org.junit.Assert.*;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -71,6 +71,20 @@ public class messageclassIT {
         // Test Option 3: Store
         assertEquals("Message successfully stored.", msg.SentMessage(3));
     }
+     @Test
+    public void testPrintMessages() {
+        messageclass msg = new messageclass(1, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
+        msg.createMessageHash(); // Generate hash first
+        
+        String output = msg.printMessages();
+        
+        // Check that all required parts are in the final output string
+        assertTrue(output.contains(msg.getMessageID()));
+        assertTrue(output.contains("+27718693002"));
+        assertTrue(output.contains("Hi Mike, can you join us for dinner tonight?"));
+    }
+    
+    
 }
 
 
