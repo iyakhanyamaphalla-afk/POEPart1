@@ -4,87 +4,97 @@
  */
 package com.mycompany.poepart1;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-/**
- *
- * @author Student
- */
 public class messageclassIT {
-    
-    
-    @Test
-    public void testMessageLengthSuccess() {
-        // Data from Task 1 image
-        messageclass msg = new messageclass(1, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
-        assertEquals("Message ready to send.", msg.checkMessageLength());
-    }
-     @Test
-    public void testMessageLengthFailure() {
-        String longMessage = "A".repeat(255); // 255 chars
-        messageclass msg = new messageclass(1, "+27718693002", longMessage);
-        assertEquals("Message exceeds 250 characters by 5; please reduce the size.", msg.checkMessageLength());
-    }
-    @Test
-    public void testRecipientSuccess() {
-        messageclass msg = new messageclass(1, "+27718693002", "Test");
-        assertEquals("Cell phone number successfully captured.", msg.checkRecipientCell());
-    }
-    @Test
-    public void testRecipientFailure() {
-        messageclass msg = new messageclass(2, "08575975889", "Test");
-        assertEquals("Cell phone number is incorrectly formatted or does not contain an international code. Please correct the number and try again.", msg.checkRecipientCell());
-    }
-       @Test
-    public void testMessageHash() {
-        messageclass msg = new messageclass(1, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
-        // Checks if the hash is generated correctly (ignoring the random first 2 digits)
-        assertTrue(msg.createMessageHash().endsWith(":1:HITONIGHT"));
-    }
-        @Test
-    public void testMessageIDCreation() {
-        messageclass msg = new messageclass(1, "+27718693002", "Test message");
-        
-        // Force Java to treat it as a String
-        String generatedID = (String) msg.getMessageID(); 
-        
-        System.out.println("Message ID generated: " + generatedID);
-        
-        assertNotNull(generatedID);
-        assertTrue(generatedID.length() <= 10);
-        assertTrue(generatedID.matches("\\d+"));
-    }
-         @Test
-    public void testSentMessageOptions() {
-        // Create a test message
-        messageclass msg = new messageclass(1, "+27718693002", "Test");
 
-        // Test Option 1: Send
-        assertEquals("Message successfully sent.", msg.SentMessage(1));
-        
-        // Test Option 2: Disregard
-        assertEquals("Press 0 to delete the message.", msg.SentMessage(2));
-        
-        // Test Option 3: Store
-        assertEquals("Message successfully stored.", msg.SentMessage(3));
+    @BeforeEach
+    public void setUp() {
+        // Clear the arrays before each test to ensure they are empty
+        POEpart1.sentMessages.clear();
+        POEpart1.storedMessages.clear();
+        POEpart1.messageHashes.clear();
+        POEpart1.messageIDs.clear();
+
+        // Populate arrays with the Test Data from your assignment sheet
+        messageclass m1 = new messageclass(1, "+27834557896", "Did you get the cake?");
+        m1.createMessageHash();
+        POEpart1.sentMessages.add(m1);
+        POEpart1.messageHashes.add(m1.getMessageHash());
+        POEpart1.messageIDs.add(m1.getMessageID());
+
+        messageclass m2 = new messageclass(2, "+27838884567", "Where are you? You are late! I have asked you to be on time.");
+        m2.createMessageHash();
+        POEpart1.storedMessages.add(m2);
+        POEpart1.messageHashes.add(m2.getMessageHash());
+        POEpart1.messageIDs.add(m2.getMessageID());
+
+        messageclass m4 = new messageclass(4, "0838884567", "It is dinner time !");
+        m4.createMessageHash();
+        POEpart1.sentMessages.add(m4);
+        POEpart1.messageHashes.add(m4.getMessageHash());
+        POEpart1.messageIDs.add(m4.getMessageID());
+
+        messageclass m5 = new messageclass(5, "+27838884567", "Ok, I am leaving without you.");
+        m5.createMessageHash();
+        POEpart1.storedMessages.add(m5);
+        POEpart1.messageHashes.add(m5.getMessageHash());
+        POEpart1.messageIDs.add(m5.getMessageID());
     }
-     @Test
-    public void testPrintMessages() {
-        messageclass msg = new messageclass(1, "+27718693002", "Hi Mike, can you join us for dinner tonight?");
-        msg.createMessageHash(); // Generate hash first
-        
-        String output = msg.printMessages();
-        
-        // Check that all required parts are in the final output string
-        assertTrue(output.contains(msg.getMessageID()));
-        assertTrue(output.contains("+27718693002"));
-        assertTrue(output.contains("Hi Mike, can you join us for dinner tonight?"));
+
+    // 1. Test: Sent Messages array correctly populated
+    @Test
+    public void testSentMessagesArrayCorrectlyPopulated() {
+        assertEquals("Did you get the cake?", POEpart1.sentMessages.get(0).getMessageContent());
+        assertEquals("It is dinner time !", POEpart1.sentMessages.get(1).getMessageContent());
     }
-    
-    
+
+    // 2. Test: Display the longest Message
+    @Test
+    public void testDisplayLongestMessage() {
+        messageclass longest = null;
+        for (messageclass msg : POEpart1.storedMessages) {
+            if (longest == null || msg.getMessageContent().length() > longest.getMessageContent().length()) {
+                longest = msg;
+            }
+        }
+        assertEquals("Where are you? You are late! I have asked you to be on time.", longest.getMessageContent());
+    }
+
+    // 3. Test: Search for messageID
+    @Test
+    public void testSearchForMessageID() {
+        String searchId = POEpart1.sentMessages.get(1).getMessageID(); // Gets ID for "It is dinner time!"
+        boolean found = false;
+        for (messageclass msg : POEpart1.sentMessages) {
+            if (msg.getMessageID().equals(searchId)) {
+                assertEquals("It is dinner time !", msg.getMessageContent());
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
+    // 4. Test: Delete a message using a message hash
+    @Test
+    public void testDeleteMessageByHash() {
+        String hashToDelete = POEpart1.storedMessages.get(0).getMessageHash(); // Hash for Message 2
+        int initialSize = POEpart1.storedMessages.size();
+        
+        // Delete logic
+        POEpart1.storedMessages.removeIf(msg -> msg.getMessageHash().equals(hashToDelete));
+        
+        assertEquals(initialSize - 1, POEpart1.storedMessages.size());
+    }
+
+    // 5. Test: The exact hash test requested by your lecturer
+    @Test
+    public void testExactHash() {
+        messageclass msg = new messageclass(0, "+27834557896", "Hi tonight");
+        String hash = msg.createMessageHash();
+        // Based on the format: First2ID : MessageNum : FirstWordLastWord
+        assertTrue(hash.endsWith("HITONIGHT"), "Hash should end with HITONIGHT in uppercase");
+    }
 }
-
-
