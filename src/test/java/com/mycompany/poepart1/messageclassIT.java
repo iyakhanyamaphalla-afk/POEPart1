@@ -52,13 +52,13 @@ public class messageclassIT {
     @Test
     public void testCheckMessageID() {
         messageclass msg = new messageclass(1, "+27834557896", "Test");
-        // Verifies the ID is <= 10 characters as per the feedback
+        // Verifies the ID is <= 10 characer the feedbackters as p
         assertTrue(msg.checkMessageID());
     }
 
     @Test
     public void testExactHash() {
-        // The exact hash test your lecturer requested
+       
         messageclass msg = new messageclass(0, "+27834557896", "Hi tonight");
         String hash = msg.createMessageHash();
         assertTrue(hash.endsWith("HITONIGHT"), "Hash should end with HITONIGHT");
@@ -116,7 +116,7 @@ public class messageclassIT {
         String hashToDelete = POEpart1.storedMessages.get(0).getMessageHash();
         int initialSize = POEpart1.storedMessages.size();
         
-        // Delete logic
+     
         POEpart1.storedMessages.removeIf(msg -> msg.getMessageHash().equals(hashToDelete));
         
         assertEquals(initialSize - 1, POEpart1.storedMessages.size());
